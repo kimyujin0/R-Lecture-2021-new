@@ -1,0 +1,99 @@
+# 데이터 시각화
+library(gapminder)
+library(dplyr)
+
+y <- gapminder %>% group_by(year, continent) %>% summarise(c_pop=sum(pop))
+head(y,10)
+
+# 1단계 - 막 그래프
+plot(y$year, y$c_pop)
+
+# 2단계 - 마커의 색상을 대륙별로 다르게 지정
+plot(y$year, y$c_pop, col=y$continent)    
+
+# 3단계 - 마커의 모양을 대륙별로 다르게 지정
+plot(y$year, y$c_pop, col=y$continent, pch=c(1:5)) 
+length(levels(y$continent))    # levels - 범주의 개수
+plot(y$year, y$c_pop, col=y$continent, pch=c(1:length(levels(y$continent))))  
+
+# 4단계 - 범례 표시 (legend)
+legend('topleft', legend = levels(y$continent), pch=c(1:length(levels(y$continent))),
+       col = c(1:length(levels(y$continent))))
+
+# 대륙별 인당 GDP, 기대수명
+plot(gapminder$gdpPercap, gapminder$lifeExp, 
+     col=gapminder$continent, 
+     pch=c(1:length(levels(gapminder$continent))))
+legend('bottomright', legend = levels(gapminder$continent), 
+       pch=c(1:length(levels(gapminder$continent))),
+       col = c(1:length(levels(gapminder$continent))))
+
+# 로그 스케일 적용
+plot(log10(gapminder$gdpPercap), gapminder$lifeExp, 
+     col=gapminder$continent, 
+     pch=c(1:length(levels(gapminder$continent))))
+legend('bottomright', legend = levels(gapminder$continent), 
+       pch=c(1:length(levels(gapminder$continent))),
+       col = c(1:length(levels(gapminder$continent))))
+
+
+# ggplot을 이용해서 그려보기
+library(ggplot2)
+ggplot(gapminder, aes(x=gdpPercap, y=lifeExp, col=continent)) + geom_point() +
+    scale_x_log10()     # aes - 그래프의 속성, geom_point() - 산점도
+
+# 인구수에 따라 포인트 크기 조절
+ggplot(gapminder, aes(x=gdpPercap, y=lifeExp, col=continent, size=pop)) + geom_point() +
+    scale_x_log10()     # size - 마크의 크기
+
+# 포인트의 투명도 조절
+ggplot(gapminder, aes(x=gdpPercap, y=lifeExp, col=continent, size=pop)) + geom_point(alpha=0.5) +
+    scale_x_log10()     # alpha - 투명도
+
+# 2007년도 자료만 보기 - dplyr과 ggplot 연동
+gapminder %>% filter(year==2007) %>% 
+    ggplot(aes(x=gdpPercap, y=lifeExp,col=continent, size=pop)) +
+    geom_point() +
+    scale_x_log10()
+
+# 연도마다 다른 그래프
+ggplot(gapminder, aes(x=gdpPercap, y=lifeExp, col=continent, size=pop)) + 
+    geom_point(alpha=0.5) +
+    scale_x_log10() + 
+    facet_wrap(~year)     # 연도 마다 다른 산점도 그래프 한번에 여러개를 보여줌
+
+# 시각화 기본 기능
+# 1. 비교/순위     geom_bar(stat='identity')- 히스토그램과 헷갈리지 않는 막대그래프(x,y 존재)
+gapminder %>% filter(continent =='Asia' & year == 1952) %>% 
+    ggplot(aes(reorder(country, pop),pop)) +
+    geom_bar(stat='identity') +
+    coord_flip()                    # reorder - 정렬하는 함수
+
+# 2. 비교/순위 - 로그 스케일
+gapminder %>% filter(continent =='Asia' & year == 1952) %>% 
+    ggplot(aes(reorder(country, pop),pop)) +
+    geom_bar(stat='identity') +
+    scale_y_log10() +
+    coord_flip()                   # coord_flip() - x,y축이 바뀜
+
+# 3. 변화 추세
+gapminder %>% filter(country=='Korea, Rep.') %>%
+    ggplot(aes(year, lifeExp, col=country)) +
+    geom_point() + 
+    geom_line()
+
+# 4. 여러 데이터의 변화 추세
+ggplot(gapminder, aes(year, lifeExp, col = continent)) + geom_point(alpha=0.2) +
+    geom_smooth()      # 신뢰구간까지 나옴!
+
+# 5. 분포 (히스토그램 : y가 없음)
+x <- filter(gapminder, year==1952)
+hist(x$lifeExp,main = 'Histogram of lifeExp in 1952')   # 기본 r 패키지
+
+x %>% ggplot(aes(lifeExp)) + geom_histogram()           # ggplot 내장
+
+# 6. 대륙별 세분화된 분포 특성 - boxplot
+x %>% ggplot(aes(continent,lifeExp)) + geom_boxplot()
+
+# 7. 상관 관계
+plot(log10(gapminder$gdpPercap), gapminder$lifeExp)

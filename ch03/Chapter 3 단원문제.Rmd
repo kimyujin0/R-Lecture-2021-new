@@ -1,0 +1,33 @@
+---
+title: "Chapter 3 단원문제"
+author: "김유진"
+date: '2021 4 21 '
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### 단축키
+- Chunk 생성: Ctrl + Alt + I
+- Knit Document: Ctrl + Shift + K
+
+
+### 단원문제 1
+x는 1부터 100까지의 수 중 3의 배수만 포함하고 y는 1부터 100까지의 수 중 4의 배수만 포함하는 벡터로 만들어라.
+```{r}
+x <- seq(3, 100, by=3)
+y <- seq(4, 100, by=4)
+x
+y
+```
+
+### 단원문제 2
+1번 문제에서 x와 y의 교집합을 구하고, 교집합에 포함된 수를 모두 더한 값을 구하라.
+```{r}
+a <- intersect(x,y)
+sum(a)
+
+```
+
