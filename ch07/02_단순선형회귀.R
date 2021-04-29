@@ -9,6 +9,7 @@ summary(car_model)
 #잔차분석 - 회귀 조건 :선형성, 정규성, 등분산성, 독립성을 만족
 par(mfrow=c(2,2))
 plot(car_model)
+par(mfrow=c(1,1))
 
 # 속도 21.5, 제동거리는?
 nx1 <-data.frame(speed=c(21.5))
