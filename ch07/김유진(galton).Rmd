@@ -1,0 +1,83 @@
+---
+title: "Galton 선형회귀"
+author: "김유진"
+date: '2021 4 29 '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(ggplot2)
+```
+
+
+## Galton 아버지(Father)와 아들의 키(Height)의 회귀식을 구해보고 의미를 파악해보시오.
+
+```{r}
+# 데이터 읽기
+galton <- read.table('https://www.randomservices.org/random/data/Galton.txt',header = T)
+head(galton)
+str(galton)
+```
+```{r}
+# 인치->센치
+galton$Father <- galton$Father*2.54
+galton$Mother <- galton$Mother*2.54
+galton$Height <- galton$Height*2.54
+head(galton)
+```
+```{r}
+# 아들만 추출
+galton_son <- subset(galton, Gender=='M')
+head(galton_son)
+galton_model <- lm(Height~Father, data=galton_son)
+coef(galton_model)
+```
+
+```{r}
+# 시각화
+model <- lm(Height~Father, data=galton)
+coef(model)
+ggplot(galton, aes(Father, Height)) +
+    geom_point(position='jitter', color='blue') +
+    geom_abline(intercept=coef(model)[1], slope=coef(model)[2], 
+                color='yellow', size=1)
+```
+
+```{r}
+# 잔차 분석
+par(mfrow=c(2,2))
+plot(galton_model)
+par(mfrow=c(1,1))
+```
+```{r}
+# 요약 통계량
+summary(galton_model)
+```
+
+```{r}
+# 2차식 요약 통계량
+g2 <- lm(Height~poly(Father,2), data = galton_son)
+summary(g2)      
+coef(g2)
+```
+```{r}
+# MSE
+deviance(galton_model) / length(galton_son$Height)
+```
+
+```{r}
+# 회귀식 : y = 0.4477 * x + 97.177
+
+# 두 변수 모두 p-vale가 0.05이하이므로 통계적으로 유의하지만, 15%의 낮은 설명력을 가진다. 이는 아들의 키는 아버지의 키 외에도 다른 유전적 영향을 받는다고 결론을 내릴 수 있다.
+
+# 잔차 분석 그래프를 보아 회귀 조건인 등분산성과 정규성, 독립성, 선형성을 만족한다.
+
+# 2차식 요약 통계량을 보면 2차식은 별로 영향을 끼치지 않는 것으로 보인다.
+
+# MSE값이 작지 않아 좋은 모형이라고 보기 어렵다.
+```
+

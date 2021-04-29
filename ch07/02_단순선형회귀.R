@@ -9,6 +9,7 @@ summary(car_model)
 #잔차분석 - 회귀 조건 :선형성, 정규성, 등분산성, 독립성을 만족
 par(mfrow=c(2,2))
 plot(car_model)
+par(mfrow=c(1,1))
 
 # 속도 21.5, 제동거리는?
 nx1 <-data.frame(speed=c(21.5))
@@ -39,3 +40,18 @@ summary(m)
 
 # ANOVA - 분산 분석
 anova(m.1, m.2, m.3, m.4)
+
+# Women data
+women
+plot(women)
+m <- lm(weight~height, data=women)
+abline(m, col='red',lwd=2)
+summary(m)
+
+# 2차식으로 모델링
+m2 <- lm(weight~poly(height,2),data = women)
+x <- seq(58, 72, length.out=300)
+y <- predict(m2, data.frame(height=x))
+lines(x,y,col='blue',lwd=2)
+summary(m2)       # 다차식으로 적용해보기-> 더 좋은 결과가 나올 수 있음
+coef(m2)
