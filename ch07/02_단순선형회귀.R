@@ -40,7 +40,6 @@ summary(m)
 
 # ANOVA - 분산 분석
 anova(m.1, m.2, m.3, m.4)
-<<<<<<< HEAD
 
 # Women data
 women
@@ -56,5 +55,3 @@ y <- predict(m2, data.frame(height=x))
 lines(x,y,col='blue',lwd=2)
 summary(m2)       # 다차식으로 적용해보기-> 더 좋은 결과가 나올 수 있음
 coef(m2)
-=======
->>>>>>> 9ef6b35bf5fa6a7f0abf2fb76662e5cb71328e92
