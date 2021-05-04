@@ -52,3 +52,5 @@ resamp <- resamples(list(결정트리=dt, 랜덤포레스트=rf,
 summary(resamp)
 
 sort(resamp, decreasing = T)
+
+dotplot(resamp)

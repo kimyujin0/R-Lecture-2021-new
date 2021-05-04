@@ -39,8 +39,8 @@ confusionMatrix(sv_pred, ucla_test$admit)
 
 # K-NN
 library(class)     # [,2:4] = 4개 변수 중 2번째
-k <- knn(ucla_train[,2:4], ucla_test[,2:4], ucla_train$admit,k=5)
-k
+pred <- knn(ucla_train[,2:4], ucla_test[,2:4], ucla_train$admit,k=5)
+pred
 t <- table(k,ucla_test$admit)
 kn_acc <- (t[1,1]+t[2,2]) / nrow(ucla_test)
 confusionMatrix(k, ucla_test$admit)   
